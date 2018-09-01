@@ -20,7 +20,7 @@ class gaussian_mixture_model:
 
 	def initialize(self):
 		# Initialize mu of dim dimension in range [-1, 1] for each component - shape [ 1 x dim x n_comp]
-		self.mean_vector = 2 * np.random.rand(1, self.dim, self.n_comp)
+		self.mean_vector = np.random.rand(1, self.dim, self.n_comp)
 		# Initialize covariance matrix of [dim x dim] dimension in range [0, 1] for each component - shape [ dim x dim x n_comp]
 		self.covariance = np.random.rand(self.dim, self.dim, self.n_comp)
 		# Initialize alpha - [k x 1] matrix with sum of elements = 1
@@ -37,8 +37,6 @@ class gaussian_mixture_model:
 		# Initialize weights of n training examples for each component - shape [ n x n_comp]
 		self.weights = np.zeros((X_train.shape[0], self.n_comp))
 		# Reshape X to [n x dim x 1]
-		my_print(np.expand_dims(X_train, axis = 2))
-		print()		
 		self._em(np.expand_dims(X_train, axis = 2))
 
 		return [self.mean_vector, self.covariance, self.alpha]
@@ -47,6 +45,7 @@ class gaussian_mixture_model:
 	def _em(self, X):
 		num_iter = 0
 		error = 10 * self.tol
+		old_likelihood = np.inf
 		while error > self.tol and num_iter < self.max_iter :
 			num_iter += 1
 			print(num_iter)
@@ -57,23 +56,36 @@ class gaussian_mixture_model:
 			self._expectation(X)
 			self._maximization(X)
 
-			error = max(np.max(np.abs(old_alpha - self.alpha)), np.max(np.abs(old_mean - self.mean_vector)),
-					np.max(np.abs(old_covariance - self.covariance)))
-			print(error)
+			# error = max(np.max(np.abs(old_alpha - self.alpha)), np.max(np.abs(old_mean - self.mean_vector)),
+			# 		np.max(np.abs(old_covariance - self.covariance)))
+			error = abs(old_likelihood - self._likelihood(X)[0,0])
+			old_likelihood = self._likelihood(X)[0,0]
+			# print(error)
+
+	def _likelihood(self, X):
+		return np.sum(np.log(np.sum(self._probability(X) * self.alpha.T , axis = 1, keepdims = True)), axis = 0, keepdims = True)
+
 	def _expectation(self, X):
 		numerator = self._probability(X) * self.alpha.T
 		self.weights = numerator/np.sum(numerator, axis = 1, keepdims = True)
+		# print(self.weights)
+		# print()
 
 	def _maximization(self, X):
 		self.alpha = np.sum(self.weights, axis = 0, keepdims = True).T / X.shape[0]
+		# print(self.alpha)
+		# print()
 		
 		mean_numerator = np.sum(np.expand_dims(self.weights, axis = 1) * X , axis = 0, keepdims = True)
 		self.mean_vector = mean_numerator / np.expand_dims(np.sum(self.weights, axis = 0, keepdims = True) , axis = 0)
+		# my_print(self.mean_vector)
+		# print()
 
 		X_u = X - self.mean_vector
 		cov_numerator = np.einsum('ikl,kjl->ijl', X_u.transpose(1 , 0, 2), X_u * np.expand_dims(self.weights, axis = 1))
 		self.covariance = cov_numerator / np.expand_dims(np.sum(self.weights, axis = 0, keepdims = True) , axis = 0)
-
+		# my_print(self.covariance)
+		# print()
 
 	def _probability(self, X):
 		# *_* WOW!!!!
@@ -90,14 +102,23 @@ class gaussian_mixture_model:
 					X_u.transpose((1,0,2)))).diagonal(0,0,1).T
 		# print(exp_term)
 		# print()
-		p = (1/np.power(2*np.pi, self.dim/2)) * (1/np.linalg.det(self.covariance.T).reshape(1,self.n_comp)) * np.exp(exp_term)
+		# my_print(self.covariance.T)
+		# print(np.sqrt(np.abs(np.linalg.det(self.covariance.T).reshape(1,self.n_comp))))
+		p = (1/np.power(2*np.pi, self.dim/2)) * (1/np.sqrt(np.abs(np.linalg.det(self.covariance.T).reshape(1,self.n_comp)))) \
+		* np.exp(exp_term)
+		# print(p)
+		# p = np.clip(p, 0.0001, 1)
+		# print(p)
+		# print()
+		# print()
 		return p
 
 if __name__ == "__main__":
 	print("Test GMM \n")
 
-	X = 2.5 * np.random.randn(5,3) + 3
-	
+	X = 2 * np.random.randn(100,3) + 1 + 3 * np.random.randn(100,3) -1
+	# X = np.random.rand(10,3)
+
 	estimator1 = gaussian_mixture_model(n_comp = 2, dimension = 3)
 
 	# How to initialize
