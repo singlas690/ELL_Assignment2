@@ -80,13 +80,14 @@ if __name__ == "__main__":
     model1.train(x_train)
     train_labels = model1.train_labels
     centroids = model1.centroids
-    predictions = model1.predict(x_test)
+    test_labels = model1.predict(x_test)
     
     from matplotlib import pyplot as plt
     import matplotlib
     colors = ['blue','green']
     plt.scatter(x_train[:,0],x_train[:,1],c=train_labels,cmap=matplotlib.colors.ListedColormap(colors))
     plt.scatter(centroids[:,0],centroids[:,1],c='red')
+    plt.scatter(x_test[:,0],x_test[:,1],c=test_labels,cmap=matplotlib.colors.ListedColormap(['black','purple']))
 	
 
 	#print(np.hstack((x_train, y_train)))
