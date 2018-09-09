@@ -35,6 +35,7 @@ def model_f1(Y_pred, Y, n):
 
 # Don't Know
 def roc():
+	return None
 
 if __name__ == "__main__" :
 	print("Testing Functions \n")

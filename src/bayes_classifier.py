@@ -1,7 +1,7 @@
 import numpy as np 
 import class_conditional_estimator as cc 
 
-class bayes_model:
+class bayes_classifier:
 
 	# Initialization
 	def __init__(self, estimator_type, param):
@@ -49,6 +49,7 @@ class bayes_model:
 	def _estimate_px_theta(self):
 		classes = np.unique(self.Y)
 		for i in classes:
+			print(i)
 			model = self._get_est_object()
 			X_temp = (self.X)[np.repeat(self.Y == i, (self.X).shape[1], axis = 1)]
 			X_temp = X_temp.reshape(int(X_temp.shape[0] / (self.X).shape[1]), (self.X).shape[1] )
@@ -74,9 +75,9 @@ if __name__ == "__main__":
 	X_train = (1000*np.random.rand(num_ex, dim)).astype('int')
 	Y_train = (5*np.random.rand(num_ex, 1)).astype('int')
 
-	parameters = [3, 0.001, 100, dim, 0.00001]
+	parameters = [2, 0.001, 20, X_train.shape[1], 0.0001]
 
-	model1 = bayes_model(estimator_type = 'GMM', param = parameters)
+	model1 = bayes_classifier(estimator_type = 'GMM', param = parameters)
 	model1.train(X_train, Y_train)
 
 	X_test = (1000*np.random.rand(10, dim)).astype('int')

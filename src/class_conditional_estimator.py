@@ -29,7 +29,10 @@ class gaussian_mixture_model:
 	
 	def estimate_parameters(self, X_train):
 		# Initialize weights of n training examples for each component - shape [ n x n_comp]
-		self.weights = np.random.rand(X_train.shape[0], self.n_comp)
+		temp = np.random.rand(X_train.shape[0], self.n_comp)
+		self.weights = temp/np.sum(temp, axis = 1, keepdims = True)
+		print(self.weights)
+		# self.weights = np.random.rand(X_train.shape[0], self.n_comp)
 		# Reshape X to [n x dim x 1]
 		self._em(np.expand_dims(X_train, axis = 2))
 
@@ -49,10 +52,10 @@ class gaussian_mixture_model:
 		old_likelihood = np.inf
 		while error > self.tol and num_iter < self.max_iter :
 			num_iter += 1
-			
+			print(num_iter)	
 			self._maximization(X)
 			self._expectation(X)
-		
+
 			error = abs(old_likelihood - self._likelihood(X)[0,0])
 			old_likelihood = self._likelihood(X)[0,0]
 	
@@ -64,11 +67,13 @@ class gaussian_mixture_model:
 	def _expectation(self, X):
 		numerator = self._probability(X) * self.alpha.T
 		self.weights = numerator/np.sum(numerator, axis = 1, keepdims = True)
-	
+		self.weights = np.clip(self.weights, 0.001, 0.999)
+
 	# M Step
 	def _maximization(self, X):
 		self.alpha = np.sum(self.weights, axis = 0, keepdims = True).T / X.shape[0]
-		
+		self.alpha = np.clip(self.alpha, 0.001, 0.999)
+
 		mean_numerator = np.sum(np.expand_dims(self.weights, axis = 1) * X , axis = 0, keepdims = True)
 		self.mean_vector = mean_numerator / np.expand_dims(np.sum(self.weights, axis = 0, keepdims = True) , axis = 0)
 		
@@ -76,7 +81,7 @@ class gaussian_mixture_model:
 		cov_numerator = np.einsum('ikl,kjl->ijl', X_u.transpose(1 , 0, 2), X_u * np.expand_dims(self.weights, axis = 1))
 		# Regularization Idea - https://stats.stackexchange.com/questions/35515/matlab-gmdistribution-fit-regularize-what-regularization-method
 		self.covariance = cov_numerator / np.expand_dims(np.sum(self.weights, axis = 0, keepdims = True) , axis = 0) + np.expand_dims(np.diag(np.diag(np.ones((self.dim,self.dim)))), axis = 2) * self.reg
-	
+
 	# Given X as n examples of dimension d ([n x dim x 1]), returns pdf value for each example for each gmm component - shape [n x k]
 	def _probability(self, X):
 		# *_* WOW!!!!
@@ -87,8 +92,8 @@ class gaussian_mixture_model:
 		exp_term = -0.5 * (np.einsum('ikl,kjl->ijl', np.einsum('ikl,kjl->ijl', X_u, cov_inverse), 
 					X_u.transpose((1,0,2)))).diagonal(0,0,1).T
 		
-		p = (1/np.power(2*np.pi, self.dim/2)) * (1/np.sqrt(np.abs(np.linalg.det(self.covariance.T).reshape(1,self.n_comp)))) \
-		* np.exp(exp_term)
+		p = (1/np.power(2*np.pi, self.dim/2)) * (1/np.sqrt(np.abs(np.linalg.det(self.covariance.T).reshape(1,self.n_comp)))) * np.exp(exp_term)
+		# p = np.clip(p, 0.001, 1000)
 		
 		return p
 
