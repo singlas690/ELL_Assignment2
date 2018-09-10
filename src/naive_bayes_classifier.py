@@ -50,20 +50,25 @@ class naive_bayes_classifier:
 		classes = np.unique(self.Y)
 		for i in classes:
 			print(i)
-			model = self._get_est_object()
 			X_temp = (self.X)[np.repeat(self.Y == i, (self.X).shape[1], axis = 1)]
 			X_temp = X_temp.reshape(int(X_temp.shape[0] / (self.X).shape[1]), (self.X).shape[1] )
-			model.estimate_parameters(X_temp)
-			(self.per_class_estimator).append(model)
+
+			for j in range((self.X).shape[1]):
+				model = self._get_est_object()
+				model.estimate_parameters(X_temp[:, j])
+				(self.per_class_estimator).append(model)
 
 			(self.prior).append(np.sum(self.Y == i) / self.Y.shape[0])
+
+		self.per_class_estimator = (self.per_class_estimator).reshape(classes, (self.X).shape[1])
 
 	# Returns class label for given m test examples each of dimension dim, X_test = [m x dim]
 	def predict(self, X_test):
 		classes = np.expand_dims(np.unique(self.Y), axis = 1)
 		Q = np.zeros((X_test.shape[0], classes.shape[0]))
 		for i in range(len(classes)):
-			Q[:, i] = ((self.per_class_estimator)[i].get_likelihood(X_test) * (self.prior)[i]).ravel()
+			
+#			Q[:, i] = ((self.per_class_estimator)[i].get_likelihood(X_test) * (self.prior)[i]).ravel()
 		class_idx = np.argmax(Q, axis = 1)
 
 		return classes[class_idx]
