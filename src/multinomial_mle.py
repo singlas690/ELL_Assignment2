@@ -10,11 +10,11 @@ import numpy as np
 
 class multinomial_mle:
     '''This is for the special case for dicrete valued features in Naive Bayes '''
-    
-    def __init__(self, n_vals):
+    #def __init__(self, n_vals):
+    def __init__(self):
         
         #no of discrete values in the feature vector
-        self.n_vals = n_vals
+        #self.n_vals = n_vals
         self.proba = {}
         
     def estimate_parameters(self, X_train):
