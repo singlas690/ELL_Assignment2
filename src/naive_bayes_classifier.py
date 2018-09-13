@@ -55,13 +55,15 @@ class naive_bayes_classifier:
 			# Calculate model parameters for each feature vector
 			for j in range((self.X).shape[1]):
 				model = self._get_est_object(j)
-				model.estimate_parameters(X_temp[:, j])
+				# print(X_temp[:, j])
+				model.estimate_parameters(np.expand_dims(X_temp[:, j], axis = 1))
 				(self.per_class_estimator).append(model)
 
 			(self.prior).append(np.sum(self.Y == i) / self.Y.shape[0])
 
 		# 2D Matrix of weights for each class and feature distribution
-		self.per_class_estimator = (self.per_class_estimator).reshape(classes, (self.X).shape[1])
+		self.per_class_estimator = np.asarray(self.per_class_estimator)
+		self.per_class_estimator = (self.per_class_estimator).reshape((classes.shape[0], (self.X).shape[1]))
 
 
 	# Returns class label for given m test examples each of dimension dim, X_test = [m x dim]
@@ -71,7 +73,7 @@ class naive_bayes_classifier:
 
 		# Number of features
 		n = X_test.shape[1]
-		for i in range(classes):
+		for i in range(classes.shape[0]):
 			for j in range(n):
 				# Calculate log of probability so that these can be added later since multiplication of probabilities will reduce to very small value
 				Q[:, i] = Q[:, i] + np.log(((self.per_class_estimator)[i][j].get_likelihood(X_test[:, j]) * (self.prior)[i]).ravel())
@@ -86,7 +88,7 @@ if __name__ == "__main__":
 	X_train = (1000*np.random.rand(num_ex, dim)).astype('int')
 	Y_train = (5*np.random.rand(num_ex, 1)).astype('int')
 
-	parameters = [1, 0.001, 20, 1, 0.0001]*5
+	parameters = [[1, 0.001, 20, 1, 0.0001]]*5
 	distributions = ['GMM', 'GMM', 'GMM', 'GMM', 'GMM']
 
 	model1 = naive_bayes_classifier(param = parameters, distrib = distributions)
