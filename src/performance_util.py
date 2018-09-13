@@ -33,6 +33,25 @@ def model_f1(Y_pred, Y, n):
 	precision = model_precision(Y_pred, Y, n)
 	return 2*recall*precision/(recall + precision)
 
+def model_macro_average(Y_pred, Y, n):
+	macro_recall = np.sum(model_recall(Y_pred, Y, n))/n
+	macro_precision = np.sum(model_precision(Y_pred, Y, n))/n
+	return np.asarray([macro_precision, macro_recall, 2*macro_precision*macro_recall/(macro_recall + macro_precision)])
+
+def model_micro_average(Y_pred, Y, n):
+	classes = (np.arange(n)).reshape((n,1))
+	temp_y_pred = np.repeat(Y_pred.T, n, axis = 0)
+	temp_y_org = np.repeat(Y.T, n, axis = 0)
+	tp = (np.sum(np.logical_and((temp_y_pred == classes), (temp_y_org == classes)), axis = 1)).reshape(n,1)
+	tp_fp = (np.sum((temp_y_pred == classes), axis = 1)).reshape(n,1)
+	tp_fn = (np.sum((temp_y_org == classes), axis = 1)).reshape(n,1)
+	
+	micro_precision = np.sum(tp)/np.sum(tp_fp)
+	micro_recall = np.sum(tp)/np.sum(tp_fn)
+	
+	return np.asarray([micro_precision, micro_recall, 2*micro_precision*micro_recall/(micro_recall + micro_precision)])
+
+
 # Don't Know
 def roc():
 	return None
