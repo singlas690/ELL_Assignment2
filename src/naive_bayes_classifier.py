@@ -35,7 +35,7 @@ class naive_bayes_classifier:
 			reg = self.parameters[feature_number][4]
 			return cc.gaussian_mixture_model(n_comp = comp, tol = toler, max_iter = max_it, dimension = dim, regularize = reg)
 
-		# Implement other estimators
+		# Implement other estimators by Harsh
 		if self.distributions[feature_number] == '':
 			return None
 
