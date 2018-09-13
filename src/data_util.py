@@ -24,7 +24,7 @@ def load_medical(path, label_map, label_present = True):
 	df = pd.read_csv(path)
 	df.fillna(df.mean(), inplace=True)
 
-	df.applymap(lambda s: label_map.get(s) if s in label_map else s)
+	df = df.applymap(lambda s: label_map.get(s) if s in label_map else s)
 
 	X = df[['TEST1' , 'TEST2', 'TEST3']].as_matrix()
 	
@@ -38,8 +38,8 @@ def load_railway(path, sex_map, class_map, label_present = True, one_hot = True)
 	df = pd.read_csv(path)
 	df.fillna(df.mode().iloc[0], inplace=True)
 
-	df.applymap(lambda s: sex_map.get(s) if s in sex_map else s)
-	df.applymap(lambda s: class_map.get(s) if s in class_map else s)
+	df = df.applymap(lambda s: sex_map.get(s) if s in sex_map else s)
+	df = df.applymap(lambda s: class_map.get(s) if s in class_map else s)
 
 	X = df[['budget', 'memberCount', 'preferredClass', 'sex', 'age']].as_matrix()
 
@@ -63,7 +63,7 @@ def load_railway(path, sex_map, class_map, label_present = True, one_hot = True)
 	return X 
 
 def split_data(X, Y, train_ratio):
-	data = np.random.permutation(np.hstack(X, Y))
+	data = np.random.permutation(np.hstack((X, Y)))
 
 	data_train = data[:int(train_ratio * data.shape[0]),:]
 	data_test = data[int(train_ratio * data.shape[0]):,:]

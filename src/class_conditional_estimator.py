@@ -31,7 +31,7 @@ class gaussian_mixture_model:
 		# Initialize weights of n training examples for each component - shape [ n x n_comp]
 		temp = np.random.rand(X_train.shape[0], self.n_comp)
 		self.weights = temp/np.sum(temp, axis = 1, keepdims = True)
-		print(self.weights)
+		# print(self.weights)
 		# self.weights = np.random.rand(X_train.shape[0], self.n_comp)
 		# Reshape X to [n x dim x 1]
 		self._em(np.expand_dims(X_train, axis = 2))
