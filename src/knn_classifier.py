@@ -15,10 +15,12 @@ class knn_model:
 		num_labels = np.max(labels)
 		answer = np.zeros((1, labels.shape[1]))
 		counts = np.zeros((1, labels.shape[1]))
-		for i in range(num_labels):
+		for i in range(int(num_labels) + 1):
 			i_counts = np.sum(labels == i, axis = 0, keepdims = True)
 			answer[(i_counts > counts)] = i
 			counts = np.maximum(i_counts, counts) 
+		# print(answer)
+		# print(counts)
 		return np.where([counts == 1], labels[0,:], answer)[0,:,:]
 
 	# Returns minkowski distance between test vector and training data X with parameter self.p - [m x 1]
@@ -39,26 +41,35 @@ class knn_model:
 	# Returns predicted labels Y - [l x 1] numpy array
 	# Given m test examples of dimension n each X - [l x n] numpy array 
 	def predict(self, X_test):
+		num_labels = (np.unique(self.Y)).shape[0]
 		dist = np.zeros(((self.X).shape[0], X_test.shape[0]))
 		for i in range(X_test.shape[0]):
 			dist[:, i] = self._distance(X_test[i,:])
+		# print(dist)
 		sorted_idx = np.argsort(dist, axis = 0)
 		Y_per_test = np.repeat(self.Y, X_test.shape[0], axis = 1)
 		k_nearest_labels = (Y_per_test[sorted_idx, np.arange(dist.shape[1])[np.newaxis, :]])[:self.k, :]
-		
+		# print(k_nearest_labels)
 		return (self._mode(k_nearest_labels)).T
 
 if __name__ == "__main__":
 	print("Test KNN Class\n")
 
-	x_train = (100*np.random.rand(10, 2)).astype('int')
-	y_train = (4*np.random.rand(10, 1)).astype('int')
+	x_train = (100*np.random.rand(10, 3)).astype('int')
+	y_train = (5*np.random.rand(10, 1)).astype('int')
 
-	x_test = (100*np.random.rand(4, 2)).astype('int')
+	x_test = (100*np.random.rand(4, 3)).astype('int')
 	
-	model1 = knn_model(k = 4)
+	model1 = knn_model()
 	model1.train(x_train, y_train)
 	predictions = model1.predict(x_test)
 
 	print(np.hstack((x_train, y_train)))
 	print(np.hstack((x_test, predictions)))
+
+	from sklearn.neighbors import KNeighborsClassifier
+	neigh = KNeighborsClassifier(n_neighbors=5, p = 2)
+	neigh.fit(x_train, y_train)
+	print(np.hstack((x_test, np.expand_dims(neigh.predict(x_test), axis = 1))))
+	# print(pu.model_recall(np.expand_dims(neigh.predict(X_test), axis = 1), Y_test, 3))
+	print(np.allclose(predictions, np.expand_dims(neigh.predict(x_test), axis = 1)))
