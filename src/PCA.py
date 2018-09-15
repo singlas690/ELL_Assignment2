@@ -49,7 +49,7 @@ class PCA:
         self.X = X_train
         self.n_components = n_components
         X_norm = self._normalize()
-        [U, S, V] = self._svd(X_norm)
+        [U, S, V] = self._svd(X_norm.T)
         self.U = U
 
     # Function to give projected data 
