@@ -33,8 +33,12 @@ class multinormal_model:
         
     def get_likelihood(self, X_test):
         X_u = X_test - self.mean_vector
-        exp_term = -0.5*np.diagonal(np.matmul(np.matmul(X_u,self.covariance),X_u.T)
-        p = (1/np.power(2*np.pi, self.n_variables/2))* (1/np.sqrt(np.abs(np.linalg.det(self.covariance))))* np.exp(exp_term)
+        #exp_term = -0.5*np.diagonal(np.matmul(np.matmul(X_u,self.covariance),X_u.T)
+        #p = (1/np.power(2*np.pi, self.n_variables/2))* (1/np.sqrt(np.abs(np.linalg.det(self.covariance))))* np.exp(exp_term)
+        exp_term = -0.5*np.diagonal(np.matmul(np.matmul(X_u,self.covariance),X_u.T))
+        
+        p = ((1/np.power(2*np.pi, self.n_variables/2))* (1/np.sqrt(np.abs(np.linalg.det(self.covariance)))))* np.exp(exp_term)
+        #return np.array([p]).T                                    
         return np.array([p]).T
         
 if __name__ == "__main__":
