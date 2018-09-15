@@ -49,7 +49,7 @@ class bayes_classifier:
 	def _estimate_px_theta(self):
 		classes = np.unique(self.Y)
 		for i in classes:
-			print(i)
+			print('Class %d' %i)
 			model = self._get_est_object()
 			X_temp = (self.X)[np.repeat(self.Y == i, (self.X).shape[1], axis = 1)]
 			X_temp = X_temp.reshape(int(X_temp.shape[0] / (self.X).shape[1]), (self.X).shape[1] )

@@ -85,11 +85,11 @@ if __name__ == "__main__":
     from matplotlib import pyplot as plt
     import matplotlib
     colors = ['blue','green']
-    plt.scatter(x_train[:,0],x_train[:,1],c=train_labels,cmap=matplotlib.colors.ListedColormap(colors))
+    # plt.scatter(x_train[:,0],x_train[:,1],c=train_labels,cmap=matplotlib.colors.ListedColormap(colors))
     plt.scatter(centroids[:,0],centroids[:,1],c='red')
     plt.scatter(x_test[:,0],x_test[:,1],c=test_labels,cmap=matplotlib.colors.ListedColormap(['black','purple']))
 	
-
+    plt.show()
 	#print(np.hstack((x_train, y_train)))
 	#print(np.hstack((x_test, predictions)))
             

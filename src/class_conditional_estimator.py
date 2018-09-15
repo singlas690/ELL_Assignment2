@@ -52,12 +52,17 @@ class gaussian_mixture_model:
 		old_likelihood = np.inf
 		while error > self.tol and num_iter < self.max_iter :
 			num_iter += 1
-			print(num_iter)	
+			# print(num_iter)	
 			self._maximization(X)
 			self._expectation(X)
-
+			
 			error = abs(old_likelihood - self._likelihood(X)[0,0])
 			old_likelihood = self._likelihood(X)[0,0]
+
+		if (num_iter == self.max_iter):
+			print("Didn't converge, ran for %d iterations" % num_iter)
+		else:
+			print("Converged after %d iterations" % num_iter)
 	
 	# Returns Data Likelihood
 	def _likelihood(self, X):
@@ -93,7 +98,7 @@ class gaussian_mixture_model:
 					X_u.transpose((1,0,2)))).diagonal(0,0,1).T
 		
 		p = (1/np.power(2*np.pi, self.dim/2)) * (1/np.sqrt(np.abs(np.linalg.det(self.covariance.T).reshape(1,self.n_comp)))) * np.exp(exp_term)
-		# p = np.clip(p, 0.001, 1000)
+		p = np.clip(p, 0.0001, 10000)
 		
 		return p
 

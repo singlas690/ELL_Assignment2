@@ -7,15 +7,17 @@ def load_fashion_mnist(path, label_present = True):
 	"""Load MNIST data from `path`"""
 	labels_path = path + '_labels/data'
 	images_path = path + '_images/data'
-
-	with open(images_path, 'rb') as imgpath:
-		images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
-
-	if label:
+	
+	labels = []
+	if label_present:
 		with open(labels_path, 'rb') as lbpath:
 			labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8)	
 		labels = np.expand_dims(labels, axis = 1)
 
+	with open(images_path, 'rb') as imgpath:
+		images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
+
+	if label_present:
 		return images, labels
 
 	return images
@@ -62,8 +64,8 @@ def load_railway(path, sex_map, class_map, label_present = True, one_hot = True)
 		return X_one_hot
 	return X 
 
-def split_data(X, Y, train_ratio):
-	data = np.random.permutation(np.hstack((X, Y)))
+def split_data(X, Y, train_ratio, random_state = 0):
+	data = np.random.RandomState(seed = random_state).permutation(np.hstack((X, Y)))
 
 	data_train = data[:int(train_ratio * data.shape[0]),:]
 	data_test = data[int(train_ratio * data.shape[0]):,:]
@@ -71,6 +73,7 @@ def split_data(X, Y, train_ratio):
 	return data_train[:, :-1], data_train[:, -1:], data_test[:, :-1], data_test[:, -1:]
 
 def normalize(X, std_tol = 0.00001):
+	X = X.astype('float')
 	mu = np.mean(X, axis = 0)
 	std = np.std(X, axis = 0)
 	std[std < std_tol] = 1
