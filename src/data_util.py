@@ -79,3 +79,12 @@ def normalize(X, std_tol = 0.00001):
 	std[std < std_tol] = 1
 
 	return (X - mu)/std, mu, std
+
+
+def normalize2(X, std_tol = 0.00001):
+	X = X.astype('float')
+	
+	norm = np.expand_dims(np.linalg.norm(X, axis = 1) , axis = 1)
+	norm[norm < std_tol] = 1
+
+	return X/norm
