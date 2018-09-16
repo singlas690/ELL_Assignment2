@@ -3,56 +3,36 @@ import numpy as np
 class PCA:
      
     # initialization
-    def _init_(self, n_components):
+    def __init__(self, n_components):
         # number of components to be projected upon
         self.n_components = n_components
         # U matrix obtained after SVD of X
-        self.U = []
+        self.Qvec = []
         # mean of input data
         self.mean = []
         # S.D. of input data
         self.sigma = []
+        self.explained_variance_ratio_ = 0
 
-    # Calculate mean
-    def _mean(self):
-        [m, n] = np.shape(self.X)
-        self.mean = (np.sum(self.X, axis = 0))/m
-
-    # Calculate standard deviation
-    def _sigma(self):
-        variance = np.var(self.X, axis = 0)
-        self.sigma = np.sqrt(variance)
-        
     # Normalize data (Centering by subtracting mean)
-    def _normalize(self):
-        [m, n] = np.shape(self.X)
-        self._mean()
-        X_norm = (self.X - self.mean)
+    def _normalize(self, X):
+        self.mean = np.mean(X, axis = 0)
+        X_norm = (X - self.mean)
         return X_norm
-    
-    # Calculate covariance matrix
-    def _covariance(self, X_norm):
-        [m, n] = np.shape(X_norm)        
-        return (np.matmul(np.transpose(X_norm), X_norm))/(m-1)
-    
-    # Singular Value Decomposition
-    def _svd(self, X_norm):
-        return np.linalg.svd(X_norm)
-    
-    # Projecting input data to smaller dimension
-    def _projectData(self, X_norm):
-        k = self.n_components
-        return np.matmul(X_norm, self.U[:, 0:k])
-        
+
     # Function to be called for calculating U and mean
-    def fit(self, X_train, n_components):
-        self.X = X_train
-        self.n_components = n_components
-        X_norm = self._normalize()
-        [U, S, V] = self._svd(X_norm.T)
-        self.U = U
+    def fit(self, X_train):
+        X_norm = self._normalize(X_train)
+        covar = np.dot(X_norm.T, X_norm)
+        eival, eivec = np.linalg.eig(covar)
+
+        idx_comp = (np.argsort(np.expand_dims(-eival, axis = 1), axis = 0))[:self.n_components, :]
+        self.Qvec = (eivec[:, idx_comp])[:,:,0]
+
+        sum_var = np.sum(np.var(X_norm, axis = 0))
+        self.explained_variance_ratio_ = np.var(np.dot(X_norm, self.Qvec), axis = 0)/sum_var
 
     # Function to give projected data 
     def transform(self, X_test):
-        X_norm = X_test - self.mean
-        return self._projectData(X_norm)
+        X_norm = self._normalize(X_test)
+        return np.dot(X_norm, self.Qvec)

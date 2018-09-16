@@ -1,5 +1,4 @@
 import numpy as np 
-from sklearn.mixture import GaussianMixture
 
 def my_print(x):
 	for i in range(x.shape[2]):

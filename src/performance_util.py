@@ -52,10 +52,6 @@ def model_micro_average(Y_pred, Y, n):
 	return np.asarray([micro_precision, micro_recall, 2*micro_precision*micro_recall/(micro_recall + micro_precision)])
 
 
-# Don't Know
-def roc():
-	return None
-
 if __name__ == "__main__" :
 	print("Testing Functions \n")
 	a = (3*np.random.rand(10,1)).astype("int")
