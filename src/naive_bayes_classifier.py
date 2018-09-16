@@ -80,7 +80,7 @@ class naive_bayes_classifier:
 		for i in range(classes.shape[0]):
 			for j in range(n):
 				# Calculate log of probability so that these can be added later since multiplication of probabilities will reduce to very small value
-				Q[:, i] = Q[:, i] + np.log(((self.per_class_estimator)[i][j].get_likelihood(X_test[:, j]) * (self.prior)[i]).ravel())
+				Q[:, i] = Q[:, i] + np.log(((self.per_class_estimator)[i][j].get_likelihood(np.expand_dims(X_test[:, j], axis = 1) * (self.prior)[i]).ravel())
 		class_idx = np.argmax(Q, axis = 1)
 
 		return classes[class_idx]
