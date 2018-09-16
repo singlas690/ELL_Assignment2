@@ -10,16 +10,17 @@ class kmeans:
     # Default no. of clusters = 3
     # Defualt cluster centroids to be chosen randomly from training data
     #def __init__(self, n_clusters = 3, rand_centroid = True, max_iter = 100):
-    def __init__(self, n_clusters = 3, max_iter = 100):        
+    def __init__(self, n_clusters = 3, max_iter = 100 , random_seed = 1):        
         self.n_clusters = n_clusters
         self.centroids = None
         self.train_labels = None
         self.max_iter = max_iter
         self.X = None
+        self.state = random_seed
         
     # Initialize random cluster centroids: choosing the cluster centres randomly from data set
     def _rand_centroid(self, X_train):
-        c = np.random.permutation(X_train)
+        c = np.random.RandomState(seed = self.state).permutation(X_train)
         centroids = np.zeros((self.n_clusters,X_train.shape[1]))
         for i in range(0, self.n_clusters):
             centroids[i,:]= c[i,:]
