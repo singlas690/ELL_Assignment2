@@ -179,10 +179,10 @@ class parzen_window:
 	def estimate_parameters(self, X_train):
 		self.X = X_train	
 
-	def _self.distance(X):
-		if (window_type == 'hypercube'):
+	def _distance(self, X):
+		if (self.window_type == 'hypercube'):
 			return _hypercube_kernel_estimation(X)
-		else if (window_type == 'gaussian'):
+		else if (self.window_type == 'gaussian'):
 			return _gaussian_kernel_estimation(X)
 
 	# X - [m x dim x 1]
