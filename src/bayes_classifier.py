@@ -40,14 +40,17 @@ class bayes_classifier:
 			return cc.gaussian_mixture_model(n_comp = comp, tol = toler, max_iter = max_it, dimension = dim, regularize = reg, clipval = clp)
 
 		# Implement other estimators
-		if self.estimator == '':
-			return None
+		if self.estimator == 'MultiNormal':
+			return cc.multinormal_model()
 
-		if self.estimator == '':
-			return None
+		if self.estimator == 'Multinomial':
+			return cc.multinomial_mle()
 
-		if self.estimator == '':
-			return None
+		if self.estimator == 'Parzen':
+			window = self.parameters[0]
+			h_ = self.parameters[1]
+			dim = self.parameters[2]
+			return cc.parzen_window(window_type = window, h = h_, dimension = dim)
 
 	# Estimate parameters for class conditional estimators	
 	def _estimate_px_theta(self):
