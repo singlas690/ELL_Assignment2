@@ -36,14 +36,17 @@ class naive_bayes_classifier:
 			return cc.gaussian_mixture_model(n_comp = comp, tol = toler, max_iter = max_it, dimension = dim, regularize = reg)
 
 		# Implement other estimators by Harsh
-		if self.distributions[feature_number] == '':
-			return None
+		if self.distributions[feature_number] == 'MultiNormal':
+			return cc.multinormal_model()
 
-		if self.distributions[feature_number] == '':
-			return None
+		if self.distributions[feature_number] == 'Multinomial':
+			return cc.multinomial_mle()
 
-		if self.distributions[feature_number] == '':
-			return None
+		if self.distributions[feature_number] == 'Parzen':
+			window = self.parameters[feature_number][0]
+			h_ = self.parameters[feature_number][1]
+			dim = self.parameters[feature_number][2]
+			return cc.parzen_window(window_type = window, h = h_, dimension = dim)
 
 	# Estimate parameters for class conditional estimators	
 	def _estimate_px_theta(self):
