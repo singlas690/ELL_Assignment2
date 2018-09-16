@@ -8,12 +8,13 @@ def my_print(x):
 class gaussian_mixture_model:
 
 	# Structure reference - http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html#sklearn.mixture.GaussianMixture.__init__
-	def __init__(self, n_comp = 1, tol = 0.001, max_iter = 1000, dimension = 1, regularize = 0.00001):
+	def __init__(self, n_comp = 1, tol = 0.001, max_iter = 1000, dimension = 1, regularize = 0.00001, clipval = True):
 		self.n_comp = n_comp
 		self.tol = tol
 		self.max_iter = max_iter
 		self.dim = dimension
 		self.reg = regularize
+		self.clip = clipval
 
 		# Initialize mu of dim dimension as 0 for each component - shape [ 1 x dim x n_comp]
 		self.mean_vector = np.zeros((1, self.dim, self.n_comp))
@@ -97,7 +98,8 @@ class gaussian_mixture_model:
 					X_u.transpose((1,0,2)))).diagonal(0,0,1).T
 		
 		p = (1/np.power(2*np.pi, self.dim/2)) * (1/np.sqrt(np.abs(np.linalg.det(self.covariance.T).reshape(1,self.n_comp)))) * np.exp(exp_term)
-		p = np.clip(p, 0.0001, 10000)
+		if (self.clip == True):
+			p = np.clip(p, 0.0000001, 100000000)
 		
 		return p
 

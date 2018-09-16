@@ -33,7 +33,11 @@ class bayes_classifier:
 			max_it = self.parameters[2]
 			dim = self.parameters[3]
 			reg = self.parameters[4]
-			return cc.gaussian_mixture_model(n_comp = comp, tol = toler, max_iter = max_it, dimension = dim, regularize = reg)
+			if len(self.parameters) == 6:
+				clp = self.parameters[5]
+			else:
+				clp = True
+			return cc.gaussian_mixture_model(n_comp = comp, tol = toler, max_iter = max_it, dimension = dim, regularize = reg, clipval = clp)
 
 		# Implement other estimators
 		if self.estimator == '':
