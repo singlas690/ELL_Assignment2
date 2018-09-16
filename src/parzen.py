@@ -17,12 +17,6 @@ class parzen_window:
 	def estimate_parameters(self, X_train):
 		self.X = X_train	
 
-	def _distance(self, X):
-		if (self.window_type == 'hypercube'):
-			return self._hypercube_kernel_estimation(X)
-		elif (self.window_type == 'gaussian'):
-			return self._gaussian_kernel_estimation(X)
-
 	# X - [m x dim x 1]
 	def _hypercube_kernel_estimation(self, X_test):
 		bool_all_dim = (np.abs(self.X - X_test)) <= self.h / 2
@@ -37,6 +31,12 @@ class parzen_window:
 		num_points = np.sum(p, axis = 0, keepdims = True)
 		return num_points
 	
+	def _distance(self, X):
+		if (self.window_type == 'hypercube'):
+			return self._hypercube_kernel_estimation(X)
+		elif (self.window_type == 'gaussian'):
+			return self._gaussian_kernel_estimation(X)
+
 	# Returns p(X | theta) for a m test examples of dimension dim each - shape [m x 1]
 	def get_likelihood(self, X_test):
 		num_points = np.zeros((1, X_test.shape[0]))
