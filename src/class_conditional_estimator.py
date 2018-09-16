@@ -170,11 +170,11 @@ class multinomial_mle:
 # Theory reference - http://www.cs.haifa.ac.il/~rita/ml_course/lectures_old/9_ParzenWin.pdf
 class parzen_window:
 
-	# Structure reference - http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html#sklearn.mixture.GaussianMixture.__init__
-	def __init__(self, window_type = 'hypercube', h = 1, dimension = 1):
+	def __init__(self, window_type = 'hypercube', h = 1, dimension = 1, div_by_vol = True):
 		self.window_type = window_type
 		self.h = h
 		self.dim = dimension
+		self.div_by_volume = div_by_vol
 	
 	def estimate_parameters(self, X_train):
 		self.X = X_train	
@@ -188,9 +188,12 @@ class parzen_window:
 	# X - [m x dim x 1]
 	# assuming diaganol covariance
 	def _gaussian_kernel_estimation(self, X_test):
-		exp_term = -0.5 * (np.power( (self.X - X_test)/ self.h), 2)
-		p = (1/np.power(2*np.pi, self.dim/2)) * (1/np.power(self.h, d)) * np.exp(exp_term)
-		num_points = np.sum(p, axis = 0, keepdims = True)
+		# print(X_test)
+		exp_term = np.sum(-0.5 * np.power((self.X - X_test)/ self.h , 2) , axis = 1)
+		p = (1/np.power(2*np.pi, self.dim/2)) * (1/np.power(self.h, self.dim)) * np.exp(exp_term)
+		# print(p)
+		num_points = np.sum(p, axis = 0)
+		# print(num_points)
 		return num_points
 	
 	def _distance(self, X):
@@ -204,7 +207,10 @@ class parzen_window:
 		num_points = np.zeros((1, X_test.shape[0]))
 		for i in range(X_test.shape[0]):
 			num_points[0, i] = self._distance(X_test[i,:])
-		num_points = num_points / ((self.X).shape[0] * self.h**2 )
+		# print(num_points)
+		num_points = num_points / ((self.X).shape[0])
+		if self.div_by_volume:
+			num_points = num_points / self.h**self.dim
 		return num_points.T
 
 if __name__ == "__main__":
