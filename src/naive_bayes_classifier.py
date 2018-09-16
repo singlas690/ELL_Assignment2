@@ -46,7 +46,8 @@ class naive_bayes_classifier:
 			window = self.parameters[feature_number][0]
 			h_ = self.parameters[feature_number][1]
 			dim = self.parameters[feature_number][2]
-			return cc.parzen_window(window_type = window, h = h_, dimension = dim)
+			div = self.parameters[feature_number][3]
+			return cc.parzen_window(window_type = window, h = h_, dimension = dim, div_by_vol = div)
 
 	# Estimate parameters for class conditional estimators	
 	def _estimate_px_theta(self):
