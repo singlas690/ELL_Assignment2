@@ -19,9 +19,9 @@ class parzen_window:
 
 	def _distance(self, X):
 		if (self.window_type == 'hypercube'):
-			return _hypercube_kernel_estimation(X)
+			return self._hypercube_kernel_estimation(X)
 		elif (self.window_type == 'gaussian'):
-			return _gaussian_kernel_estimation(X)
+			return self._gaussian_kernel_estimation(X)
 
 	# X - [m x dim x 1]
 	def _hypercube_kernel_estimation(self, X_test):
