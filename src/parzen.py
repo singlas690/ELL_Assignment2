@@ -9,7 +9,7 @@ def my_print(x):
 class parzen_window:
 
 	# Structure reference - http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html#sklearn.mixture.GaussianMixture.__init__
-	def __init__(self, center, window_type = 'hypercube', h, dimension):
+	def __init__(self, center, window_type = 'hypercube', h = 1, dimension = 1):
 		self.window_type = window_type
 		self.h = h
 		self.dim = dimension
@@ -20,7 +20,7 @@ class parzen_window:
 	def _distance(self, X):
 		if (self.window_type == 'hypercube'):
 			return _hypercube_kernel_estimation(X)
-		else if (self.window_type == 'gaussian'):
+		elif (self.window_type == 'gaussian'):
 			return _gaussian_kernel_estimation(X)
 
 	# X - [m x dim x 1]
