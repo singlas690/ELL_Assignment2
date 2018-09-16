@@ -171,7 +171,7 @@ class multinomial_mle:
 class parzen_window:
 
 	# Structure reference - http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html#sklearn.mixture.GaussianMixture.__init__
-	def __init__(self, center, window_type = 'hypercube', h, dimension):
+	def __init__(self, window_type = 'hypercube', h, dimension):
 		self.window_type = window_type
 		self.h = h
 		self.dim = dimension
