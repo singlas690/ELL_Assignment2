@@ -34,5 +34,6 @@ class PCA:
 
     # Function to give projected data 
     def transform(self, X_test):
+        X_test = X_test.astype('float')
         X_norm = self._normalize(X_test)
         return np.dot(X_norm, self.Qvec)
