@@ -1,10 +1,11 @@
 import numpy as np 
 
 class perceptron_model:
-    # Default euclidean distance with 5 neighbours
-    def __init__(self, e= 1 , num_classes = 2, learning =0.01):
+    
+    def __init__(self, e= 1 , num_classes = 2, learn =0.01):
+        #use constructor as  " perceptron_model(x,y,z) "
         self.e = e
-        self.learning = learning
+        self.learning = learn
         self.num_classes = num_classes
         self.X = None
         self.Y = None
@@ -27,7 +28,7 @@ class perceptron_model:
         return weights
 
     def predict(self, X_test, weights):
-        result = np.zeros([len(X_test),1])
+        result = np.zeros([len(X_test)])
         for c in range(len(X_test)):
             maxy =-1000000000000
             classy =-1
@@ -37,3 +38,7 @@ class perceptron_model:
                     maxy = np.dot(X_test[c],weights[k])
             result[c] = classy
         return result
+    
+if __name__ == "__main__":
+    percy = perceptron_model(1, 11, 0.11)
+    print('xsy')
