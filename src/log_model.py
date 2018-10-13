@@ -40,7 +40,7 @@ class LogitModel:
             gradient[0]=gradient[0]-(self.Lambda/y.size)*self.theta[0]
             self.theta -= self.alpha * gradient
             
-            if(self.verbose == True and i % 10000 == 0):
+            if(i % 10000 == 0):
                 z = np.dot(X_aug, self.theta)
                 h = self.sigmoid(z)
                 print('train loss after ',i,'iterations:', self.log_loss(h, y), '\t')
