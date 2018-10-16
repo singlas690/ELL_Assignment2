@@ -30,7 +30,7 @@ class flda:
 		n, m = X_train.shape
 		sw = 0
 		for i in range(n):
-			if (Y_train[i]==k):
+			if (Y_train[i] == k):
 				sw = sw + np.matmul((X_train[i].reshape(1, m) - mean1).T, (X_train[i].reshape(1, m) - mean1))
 			else:
 				sw = sw + np.matmul((X_train[i].reshape(1, m) - mean0).T, (X_train[i].reshape(1, m) - mean0))
@@ -60,7 +60,7 @@ class flda:
 					class_pred = k 
 					maxy = np.dot(X_test[c], self.weight[k])
 			result[c] = class_pred
-		return result
+		return result.reshape((len(X_test), 1))
 
 if __name__ == '__main__':
 	X_train = (100*np.random.rand(10, 3)).astype('int')
@@ -69,3 +69,4 @@ if __name__ == '__main__':
 	percy = flda(num_classes = 5)
 	percy.train(X_train, Y_train)
 	Y = percy.predict(X_test)
+	print(Y.shape)

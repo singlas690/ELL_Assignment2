@@ -12,14 +12,14 @@ from numpy.linalg import inv
 class LinearModel:
     
     
-    def __init__(self, solver = 'gd', Lambda = 0, n_iterations=100000, alpha = .01):
+    def __init__(self, solver = 'gd', Lambda = 0, num_iter = 100000, alpha = .01):
         # Two options for solver: 'gd' or 'ols'
         self.X = None
         self.y = None
         self.Lambda = Lambda                 # regularisation constant
         self.solver = solver                # type of solver: 'ols' or 'gd'
         self.coeff = None                 # coeffiecients of the hypothesis
-        self.n_iterations= n_iterations   # no of iterations for gradient descent
+        self.num_iter = num_iter   # no of iterations for gradient descent
         self.alpha = alpha               # step size for gradient descent
         self.cost_history = None
         
@@ -28,10 +28,10 @@ class LinearModel:
         J = 0
         grad = np.zeros(theta.shape)
         #print('Shape grad 1', grad.shape)
-        temp=theta
-        temp[0]=0
-        J = (sum(np.square(X.dot(theta) - y))+(Lambda/(2*m))*sum(np.square(temp)));
-        grad = ((X.T.dot(X.dot(theta)-y))+(Lambda*temp))/m;
+        temp = theta
+        temp[0] = 0
+        J = (sum(np.square(X.dot(theta) - y)) + (Lambda/(2*m))*sum(np.square(temp)));
+        grad = ((X.T.dot(X.dot(theta)-y)) + (Lambda*temp))/m;
         #print('the shape of grad is', grad.shape)
         #print('the shape of J is ', J.shape)
         return (J , grad)
@@ -42,15 +42,15 @@ class LinearModel:
         # X_train is 2d array (mXn)
         m = X_train.shape[0]
         n = X_train.shape[1]
-        ones = np.ones((1,m))
-        X_aug = np.concatenate((ones,X_train.T),axis = 0).T
+        ones = np.ones((1, m))
+        X_aug = np.concatenate((ones, X_train.T), axis = 0).T
         self.X = X_aug
-        self.y= y_train.reshape((m,1))
+        self.y= y_train.reshape((m, 1))
         #self.coeff = np.zeros((self.X.shape[1],1))
         if self.solver=='ols':
-            self.coeff = inv(self.Lambda*np.identity(n)+X_aug.transpose().dot(X_aug)).dot(X_aug.transpose()).dot(y_train)
+            self.coeff = inv(self.Lambda*np.identity(n) + X_aug.transpose().dot(X_aug)).dot(X_aug.transpose()).dot(y_train)
         if self.solver=='gd':
-            a = self.gradient_descent(self.X,self.y, self.Lambda, self.alpha, self.n_iterations)
+            a = self.gradient_descent(self.X, self.y, self.Lambda, self.alpha, self.num_iter)
             self.coeff = a[0]
             self.cost_history = a[1]
             
@@ -59,7 +59,7 @@ class LinearModel:
     
         cost_history = [0] * iterations
         
-        theta = np.zeros((X.shape[1],1))
+        theta = np.zeros((X.shape[1], 1))
         #print('running the gradient descent function\n')
         #print('the shape of theta is', theta.shape)
     
@@ -81,8 +81,7 @@ class LinearModel:
     def predict(self, X_test):
         m = X_test.shape[0]
         ones = np.ones((1,m))
-        X_aug_test = np.concatenate((ones,X_test.T),axis = 0).T
-        
+        X_aug_test = np.concatenate((ones, X_test.T), axis = 0).T
         y_pred = X_aug_test.dot(self.coeff)
         return y_pred
     
@@ -91,9 +90,7 @@ class LinearModel:
     
     
 if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    from sklearn import datasets, linear_model
-    from sklearn.metrics import mean_squared_error, r2_score
+
     print("Test Linear Model class\n")
     '''
     # Load the diabetes dataset
