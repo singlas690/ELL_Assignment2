@@ -53,7 +53,7 @@ class softmaxLogit:
     def predict(self, someX):
         probs = self.softmax(np.dot(someX, self.weight))
         preds = np.argmax(probs, axis=1)
-        return preds
+        return preds.reshape((len(preds), 1))
     
     def predict_proba(self, someX):
         probs = self.softmax(np.dot(someX, self.weight))
