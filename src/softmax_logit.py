@@ -65,7 +65,10 @@ class softmaxLogit:
         probs = self.softmax(np.dot(someX,self.w))
         preds = np.argmax(probs,axis=1)
         return preds
-
+    
+    def predict_proba(self, someX):
+        probs = self.softmax(np.dot(someX,self.w))
+        return probs
 
 
     def getAccuracy(self,someX,someY):
