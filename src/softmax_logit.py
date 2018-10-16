@@ -24,10 +24,10 @@ class softmaxLogit:
     
     # Either use this helper func or pandas.dummies for one hot encoding of y
     def oneHotIt(self, Y):
-        '''m = Y.shape[0]
-        #Y = Y[:,0]
-        OHX = scipy.sparse.csr_matrix((np.ones(m), (Y, np.array(range(m)))))
-        OHX = np.array(OHX.todense()).T'''
+        # m = Y.shape[0]
+        # Y = Y[:,0]
+        # OHX = scipy.sparse.csr_matrix((np.ones(m), (Y, np.array(range(m)))))
+        # OHX = np.array(OHX.todense()).T'''
         df = pd.DataFrame({'target':Y})
         df1 = pd.get_dummies(df, columns=["target"], drop_first=False)
         return df1.values       
