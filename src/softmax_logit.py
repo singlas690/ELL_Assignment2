@@ -10,7 +10,7 @@ class softmaxLogit:
         self.Lambda = Lambda
         self.alpha = alpha
         self.num_iter = iterations
-        self.w = None
+        self.weight = None
         
     def getLoss(self, w, x, y, lam):
         m = x.shape[0]                      #First we get the number of training examples
@@ -45,15 +45,15 @@ class softmaxLogit:
             loss,grad = self.getLoss(w, x, y, lam)
             losses.append(loss)
             w = w - (learningRate * grad)
-        self.w = w
+        self.weight = w
     
     def predict(self, someX):
-        probs = self.softmax(np.dot(someX, self.w))
+        probs = self.softmax(np.dot(someX, self.weight))
         preds = np.argmax(probs, axis=1)
         return preds
     
     def predict_proba(self, someX):
-        probs = self.softmax(np.dot(someX, self.w))
+        probs = self.softmax(np.dot(someX, self.weight))
         return probs
 
 
