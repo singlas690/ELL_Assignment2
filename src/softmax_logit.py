@@ -64,7 +64,7 @@ class softmaxLogit:
     def predict(self, someX):
         probs = self.softmax(np.dot(someX,self.w))
         preds = np.argmax(probs,axis=1)
-        return probs,preds
+        return preds
 
 
 
