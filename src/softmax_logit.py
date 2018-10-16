@@ -25,10 +25,11 @@ class softmaxLogit:
     
     # Either use this helper func or pandas.dummies for one hot encoding of y
     def oneHotIt(self, Y):
-        m = len(Y)
-        b = np.zeros((m, self.classes))
-        b[np.arange(3), a] = 1
-        return b
+        return np.squeeze(np.eye(self.classes)[Y.reshape(-1)])
+#         m = len(Y)
+#         b = np.zeros((m, self.classes))
+#         b[np.arange(3), a] = 1
+#         return b
     
     def softmax(self, z):
         z -= np.max(z)
