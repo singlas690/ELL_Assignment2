@@ -7,11 +7,12 @@ class softmaxLogit:
     # encoding of y vector
     # One hot encoding can be done using helper func defined below or using pandas.dummies      
 
-    def __init__(self, Lambda= 1, alpha = 0.001, iterations = 10000):
+    def __init__(self, Lambda= 1, alpha = 0.001, iterations = 10000, num_classes = 2):
         self.Lambda = Lambda
         self.alpha = alpha
         self.num_iter = iterations
         self.weight = None
+        self.classes = num_classes
         
     def getLoss(self, w, x, y, lam):
         m = x.shape[0]                      #First we get the number of training examples
@@ -24,14 +25,11 @@ class softmaxLogit:
     
     # Either use this helper func or pandas.dummies for one hot encoding of y
     def oneHotIt(self, Y):
-        # m = Y.shape[0]
-        # Y = Y[:,0]
-        # OHX = scipy.sparse.csr_matrix((np.ones(m), (Y, np.array(range(m)))))
-        # OHX = np.array(OHX.todense()).T'''
-        df = pd.DataFrame({'target':Y})
-        df1 = pd.get_dummies(df, columns=["target"], drop_first=False)
-        return df1.values       
-
+        m = len(Y)
+        b = np.zeros((m, self.classes))
+        b[np.arange(3), a] = 1
+        return b
+    
     def softmax(self, z):
         z -= np.max(z)
         sm = (np.exp(z).T / np.sum(np.exp(z), axis=1)).T
@@ -67,5 +65,3 @@ class softmaxLogit:
         prob, prede = self.predict(someX)
         accuracy = sum(prede == someY)/(float(len(someY)))
         return accuracy
-
-
