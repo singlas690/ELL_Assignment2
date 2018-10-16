@@ -59,7 +59,6 @@ class softmaxLogit:
             losses.append(loss)
             w = w - (learningRate * grad)
         self.w = w
-        print (loss)
     
     def predict(self, someX):
         probs = self.softmax(np.dot(someX,self.w))
