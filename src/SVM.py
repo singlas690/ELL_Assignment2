@@ -38,6 +38,7 @@ class SVM:
                     errors.append(error)
             weights[j] = w
         return weights
+    
 
     def predict(self, X_test, weights):
         result = np.zeros([len(X_test)])
