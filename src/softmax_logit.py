@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.sparse
-import pandas as pd
+from matplotlib import pyplot as plt
+
 class softmaxLogit:
 
     # Use this for multiclass classification using logistic classifer after one hot
@@ -26,10 +27,6 @@ class softmaxLogit:
     # Either use this helper func or pandas.dummies for one hot encoding of y
     def oneHotIt(self, Y):
         return np.squeeze(np.eye(self.classes)[Y.reshape(-1)])
-#         m = len(Y)
-#         b = np.zeros((m, self.classes))
-#         b[np.arange(3), a] = 1
-#         return b
     
     def softmax(self, z):
         z -= np.max(z)
@@ -49,7 +46,13 @@ class softmaxLogit:
             losses.append(loss)
             w = w - (learningRate * grad)
         self.weight = w
-    
+        plt.figure()
+        plt.plot(np.arange(len(losses)), losses)
+        plt.xlabel("Number of Iterations")
+        plt.ylabel("Loss")
+        plt.savefig("Images/softmaxloss.png")
+        plt.close()
+
     def predict(self, someX):
         probs = self.softmax(np.dot(someX, self.weight))
         preds = np.argmax(probs, axis=1)
