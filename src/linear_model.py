@@ -23,8 +23,8 @@ class LinearModel:
         grad = np.zeros(theta.shape)
         temp = theta
         temp[0] = 0
-        J = (sum(np.square(X.dot(theta) - y)) + (Lambda/(2*m))*sum(np.square(temp)));
-        grad = ((X.T.dot(X.dot(theta)-y)) + (Lambda*temp))/m;
+        J = (sum(np.square(X.dot(theta) - y))/(2*m) + (Lambda/(2*m))*sum(np.square(temp)))
+        grad = ((X.T.dot(X.dot(theta)-y)) + (Lambda*temp))/m
         return (J , grad)
         
     def poly_phi(self, X_train):
@@ -56,7 +56,7 @@ class LinearModel:
         self.y= y_train.reshape((m, 1))
         #self.coeff = np.zeros((self.X.shape[1],1))
         if self.solver=='ols':
-            self.coeff = inv(self.Lambda*np.identity(n) + X_aug.transpose().dot(X_aug)).dot(X_aug.transpose()).dot(y_train)
+            self.coeff = inv(self.Lambda*np.identity(n+1) + X_aug.transpose().dot(X_aug)).dot(X_aug.transpose()).dot(y_train)
         if self.solver=='gd':
             a = self.gradient_descent(self.Lambda, self.alpha, self.num_iter)
             self.coeff = a[0]
@@ -85,7 +85,12 @@ class LinearModel:
             # New Cost Value
             cost = self.cost_func(X, y, theta, Lambda)[0]
             cost_history[iteration] = cost
-        
+        plt.figure()
+        plt.plot(np.arange(len(cost_history)), cost_history)
+        plt.xlabel("Number of Iterations")
+        plt.ylabel("Loss")
+        plt.savefig("linear_loss.png")
+        plt.show()        
         return (theta, cost_history)
 
         
