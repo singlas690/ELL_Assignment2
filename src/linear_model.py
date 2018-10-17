@@ -1,18 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct  9 13:16:15 2018
-
-@author: harsh
-"""
-
 import numpy as np
 from numpy.linalg import inv
 
 class LinearModel:
     
     
-    def __init__(self, solver = 'gd', Lambda = 0, num_iter = 100000, alpha = .01):
+    def __init__(self, solver = 'gd', Lambda = 0, num_iter = 100000, alpha = .01, phi = 'linear', parameters = []):
         # Two options for solver: 'gd' or 'ols'
         self.X = None
         self.y = None
@@ -22,24 +14,40 @@ class LinearModel:
         self.num_iter = num_iter   # no of iterations for gradient descent
         self.alpha = alpha               # step size for gradient descent
         self.cost_history = None
+        self.phi = phi
+        self.para = parameters
         
     def cost_func(self, X, y, theta, Lambda):
         m = len(y)
         J = 0
         grad = np.zeros(theta.shape)
-        #print('Shape grad 1', grad.shape)
         temp = theta
         temp[0] = 0
         J = (sum(np.square(X.dot(theta) - y)) + (Lambda/(2*m))*sum(np.square(temp)));
         grad = ((X.T.dot(X.dot(theta)-y)) + (Lambda*temp))/m;
-        #print('the shape of grad is', grad.shape)
-        #print('the shape of J is ', J.shape)
         return (J , grad)
         
-    
+    def poly_phi(self, X_train):
+        degree = self.para[0]
+        n, m = X_train.shape
+        X_train_new = np.zeros((n, m*degree))
+
+        for i in range(degree):
+            X_train_new[:, m*i : m*(i+1)] = np.power(X_train, i+1)
+
+        return X_train_new
+
+    def input_vector(self, X_train):
+        if self.phi == 'linear':
+            return X_train
+        elif self.phi == 'poly':
+            return self.poly_phi(X_train)
+
+
     def train(self, X_train, y_train):
         # y_train is a column vector (mX1)
         # X_train is 2d array (mXn)
+        X_train = self.input_vector(X_train)
         m = X_train.shape[0]
         n = X_train.shape[1]
         ones = np.ones((1, m))
@@ -50,16 +58,20 @@ class LinearModel:
         if self.solver=='ols':
             self.coeff = inv(self.Lambda*np.identity(n) + X_aug.transpose().dot(X_aug)).dot(X_aug.transpose()).dot(y_train)
         if self.solver=='gd':
-            a = self.gradient_descent(self.X, self.y, self.Lambda, self.alpha, self.num_iter)
+            a = self.gradient_descent(self.Lambda, self.alpha, self.num_iter)
             self.coeff = a[0]
             self.cost_history = a[1]
             
         
-    def gradient_descent(self, X,y, Lambda, alpha, iterations):
-    
+    def gradient_descent(self, Lambda, alpha, iterations):
+        
+        X = self.X
+        y = self.y
+
         cost_history = [0] * iterations
         
         theta = np.zeros((X.shape[1], 1))
+        print(X.shape, theta.shape)
         #print('running the gradient descent function\n')
         #print('the shape of theta is', theta.shape)
     
@@ -79,6 +91,7 @@ class LinearModel:
         
     
     def predict(self, X_test):
+        X_test = self.input_vector(X_test)
         m = X_test.shape[0]
         ones = np.ones((1,m))
         X_aug_test = np.concatenate((ones, X_test.T), axis = 0).T
@@ -109,11 +122,12 @@ if __name__ == "__main__":
     diabetes_y_test = diabetes.target[-20:]
 '''
 
-    X_train = 10*np.random.randn(100,1)+5
+    X_train = 10*np.random.randn(10,1)+5
     y_train = 3*X_train +1
     # Create linear regression object
     #regr = linear_model.LinearRegression()
-    regr = LinearModel(solver='gd')
+    parameters = [2]
+    regr = LinearModel(solver='gd', phi = 'poly', parameters = parameters)
     # Train the model using the training sets
     #regr.fit(diabetes_X_train, diabetes_y_train)
     regr.train(X_train, y_train)
