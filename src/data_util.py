@@ -64,6 +64,14 @@ def load_railway(path, sex_map, class_map, label_present = True, one_hot = True)
 		return X_one_hot
 	return X 
 
+def load_river(path, label_present = True):
+	df = pd.read_csv(path)
+	df.fillna(df.mean(), inplace=True)
+	X = df[['x']].as_matrix()
+	if label_present:
+		Y = df[['levels']].as_matrix()
+	return X, Y
+    
 def split_data(X, Y, train_ratio, random_state = 0):
 	data = np.random.RandomState(seed = random_state).permutation(np.hstack((X, Y)))
 

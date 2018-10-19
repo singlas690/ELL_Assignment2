@@ -1,10 +1,12 @@
 import numpy as np
 from numpy.linalg import inv
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 class LinearModel:
     
     
-    def __init__(self, solver = 'gd', Lambda = 0, num_iter = 100000, alpha = .01, phi = 'linear', parameters = []):
+    def __init__(self, solver = 'gd', Lambda = 1, num_iter = 100000, alpha = .01, phi = 'linear', parameters = []):
         # Two options for solver: 'gd' or 'ols'
         self.X = None
         self.y = None
@@ -27,27 +29,27 @@ class LinearModel:
         grad = ((X.T.dot(X.dot(theta)-y)) + (Lambda*temp))/m
         return (J , grad)
         
-    def poly_phi(self, X_train):
-        degree = self.para[0]
-        n, m = X_train.shape
-        X_train_new = np.zeros((n, m*degree))
+    # def poly_phi(self, X_train):
+    #     degree = self.para[0]
+    #     n, m = X_train.shape
+    #     X_train_new = np.zeros((n, m*degree))
 
-        for i in range(degree):
-            X_train_new[:, m*i : m*(i+1)] = np.power(X_train, i+1)
+    #     for i in range(degree):
+    #         X_train_new[:, m*i : m*(i+1)] = np.power(X_train, i+1)
 
-        return X_train_new
+    #     return X_train_new
 
-    def input_vector(self, X_train):
-        if self.phi == 'linear':
-            return X_train
-        elif self.phi == 'poly':
-            return self.poly_phi(X_train)
+    # def input_vector(self, X_train):
+    #     if self.phi == 'linear':
+    #         return X_train
+    #     elif self.phi == 'poly':
+    #         return self.poly_phi(X_train)
 
 
     def train(self, X_train, y_train):
         # y_train is a column vector (mX1)
         # X_train is 2d array (mXn)
-        X_train = self.input_vector(X_train)
+        # X_train = self.input_vector(X_train)
         m = X_train.shape[0]
         n = X_train.shape[1]
         ones = np.ones((1, m))
@@ -89,14 +91,14 @@ class LinearModel:
         plt.plot(np.arange(len(cost_history)), cost_history)
         plt.xlabel("Number of Iterations")
         plt.ylabel("Loss")
-        plt.savefig("linear_loss.png")
+        plt.savefig("Images/linear_loss.png")
         plt.show()        
         return (theta, cost_history)
 
         
     
     def predict(self, X_test):
-        X_test = self.input_vector(X_test)
+        # X_test = self.input_vector(X_test)
         m = X_test.shape[0]
         ones = np.ones((1,m))
         X_aug_test = np.concatenate((ones, X_test.T), axis = 0).T
