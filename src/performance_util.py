@@ -51,6 +51,12 @@ def model_micro_average(Y_pred, Y, n):
 	
 	return np.asarray([micro_precision, micro_recall, 2*micro_precision*micro_recall/(micro_recall + micro_precision)])
 
+def r2_score(y_pred, y):
+	ybar = numpy.sum(y) / len(y)
+	ssreg = numpy.sum((y_pred - ybar) ** 2)
+	sstot = numpy.sum((y - ybar) ** 2)
+
+	return ssreg/sstot
 
 if __name__ == "__main__" :
 	print("Testing Functions \n")
